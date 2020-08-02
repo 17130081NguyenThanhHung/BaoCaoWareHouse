@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import com.chilkatsoft.CkGlobal;
 import com.chilkatsoft.CkScp;
@@ -22,21 +23,26 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class DownloadFile {
-
+	private ResultSet rs = null;
 	String condition;
+	private PreparedStatement pst = null;
+	private Connection conn = null;
 
-	public void DownloadFile(String condition) {
+	public void downloadFile(String condition) {
 		this.condition = condition;
 	}
 
 	static {
 		try {
+			// coppy copy file chilkat.dll vao thu muc project
 			System.loadLibrary("chilkat");
 		} catch (UnsatisfiedLinkError e) {
 			System.err.println("Native code library failed to load.\n" + e);
 			System.exit(1);
 		}
 	}
+
+	// chilkat scp download
 	public static String scpDownload(String hostname, int port, String user, String pw, String remotePath,
 			String localPath) {
 		CkSsh ssh = new CkSsh();
@@ -73,6 +79,48 @@ public class DownloadFile {
 
 	}
 
+	// kiểm tra đã download dược hay chưa
+	public boolean isDownloadFile(int id,String hostname, int port, String username, String password,
+			String sycn_must_math, String server_path, String local_path) {
+		boolean result = false;
+		String sql = "SELECT * FROM config";
+		try {
+			pst = ((Statement) new ConnectDB()).getConnection().prepareStatement(sql);
+			rs = pst.executeQuery();
+			while (rs.next()) {
+				id = rs.getInt("id");
+				 hostname = rs.getString("hostname");
+				 port = rs.getInt("port");
+				 username = rs.getString("username");
+				 password = rs.getString("password");
+				 sycn_must_math = rs.getString("sycn_must_math");
+				 server_path = rs.getString("server_path");
+				 local_path = rs.getString("local_path");
+
+				isDownloadFile(id, hostname, port, username, password, sycn_must_math, server_path, local_path);
+				result = true;
+				return result;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return result;
+
+		} finally {
+			try {
+				if (pst != null)
+					pst.close();
+				if (rs != null)
+					rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+		return result;
+	}
+
 // phuong thuc load to log
 	public static boolean log() {
 		boolean check = false;
@@ -90,7 +138,6 @@ public class DownloadFile {
 			File[] children = dir.listFiles();
 			for (File file : children) {
 				PreparedStatement preparedStmt = conn.prepareStatement(sql);
-//				preparedStmt.setString(5, file.());
 				// tên file
 				preparedStmt.setString(1, file.getName());
 				// trạng thái
@@ -121,7 +168,6 @@ public class DownloadFile {
 		return check;
 	}
 
-// phương thức send mail
 	public static boolean sendMail(String to, String subject, String bodyMail) {
 		Properties props = new Properties();
 		// Cấu hình mail server
@@ -132,11 +178,10 @@ public class DownloadFile {
 		Session session = Session.getInstance(props, new javax.mail.Authenticator() {
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication("Datawarehousethaysong2020@gmail.com", "0964024229");
+				return new PasswordAuthentication("Datawarehousethaysong2020@gmail.com", "964024229");
 			}
 		});
-		// Used to debug SMTP issues
-//		session.setDebug(true);
+
 		try {
 			// Create a default MimeMessage object.
 			MimeMessage message = new MimeMessage(session);
@@ -179,7 +224,7 @@ public class DownloadFile {
 //		// Thư mục download file trên Nas về
 //		String localPath = "D:\\DataWareHouse";
 ////		scpDownload(hostname, port, user, pw, remotePath, localPath);
-////		log();0
+//		log();
 		sendMailLog();
 	}
 
