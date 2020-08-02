@@ -6,19 +6,19 @@ import javax.mail.internet.*;
 
 public class SendMail {
 
-    private static String USER_NAME = "17130081@st.hcmuaf.edu.vn";  // GMail user name (just the part before "@gmail.com")
-    private static String PASSWORD = "Paul127901234@"; // GMail password
-    private static String RECIPIENT = "17130081@st.hcmuaf.edu.vn";
+    private static String USER_NAME = "Datawarehousethaysong2020@gmail.com";  // GMail user name (just the part before "@gmail.com")
+    private static String PASSWORD = "0964024229"; // GMail password
+    private static String RECIPIENT = "17130081@st.hcmuaf.edu.vn, nguyenthanhhungb6@gmail.com";
 
     public static void main(String[] args) {
         String from = USER_NAME;
         String pass = PASSWORD;
         String[] to = { RECIPIENT }; // list of recipient email addresses
-        String subject = "Java send mail example";
-        String body = "Welcome to JavaMail!";
+        String subject = "Test";
+        String body = "Xin chào, đây là mail tự đông.";
 
         sendFromGMail(from, pass, to, subject, body);
-        System.out.println("gui thanh cong cmnr");
+        System.out.println("Mail đã được gửi thành công!");
     }
 
     private static void sendFromGMail(String from, String pass, String[] to, String subject, String body) {
