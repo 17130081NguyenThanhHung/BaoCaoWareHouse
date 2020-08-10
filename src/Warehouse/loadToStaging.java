@@ -83,7 +83,7 @@ public class loadToStaging {
 				}
 
 				rs = pr.executeUpdate();
-				// ghi thanh cong thi gan temp=true
+				// ghi thanh cong thi gan temp = true
 				temp = true;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -114,7 +114,7 @@ public class loadToStaging {
 		}
 	}
 
-	static void loadToStagging() throws SQLException {
+	static void loadToStaging() throws SQLException {
 		// su dung db sinh vien
 		String useDB = "use " + db_target;
 		System.out.println(useDB);
@@ -145,7 +145,7 @@ public class loadToStaging {
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		connectDb();
-		int id_config = Integer.parseInt(args[0]);
+		// int id_config = Integer.parseInt(args[0]);
 		getConfigData(id_config);
 		getFileER(id_config);
 		loadToStagging();
